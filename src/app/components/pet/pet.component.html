@@ -1,0 +1,25 @@
+<h2>Pet List</h2>
+
+<!-- Add Pet Form -->
+<form (ngSubmit)="addPet()" #petForm="ngForm">
+  <input type="text" placeholder="Pet Name" [(ngModel)]="newPet.name" name="name" required />
+  <input type="text" placeholder="Breed" [(ngModel)]="newPet.breed" name="breed" required />
+  <input type="number" placeholder="Age" [(ngModel)]="newPet.age" name="age" required />
+  <input type="number" placeholder="Weight (kg)" [(ngModel)]="newPet.weight" name="weight" required />
+  <input type="text" placeholder="Photo URL" [(ngModel)]="newPet.photoUrl" name="photoUrl" required />
+ <button type="submit">{{ editIndex === null ? 'Add Pet' : 'Update Pet' }}</button>
+ <!-- Show "Cancel Edit" button only when editing -->
+  <button type="button" *ngIf="editIndex !== null" (click)="resetForm()">Cancel Edit</button>
+
+</form>
+
+<!-- Pet List -->
+<div *ngFor="let pet of pets; let i = index" class="pet-card">
+  <img [src]="pet.photoUrl" alt="{{ pet.name }}" />
+  <h3>{{ pet.name }}</h3>
+  <p>Breed: {{ pet.breed }}</p>
+  <p>Age: {{ pet.age }} years</p>
+  <p>Weight: {{ pet.weight }} kg</p>
+  <button (click)="editPet(i)">Edit</button>
+  <button (click)="deletePet(i)">Delete</button>
+</div>
