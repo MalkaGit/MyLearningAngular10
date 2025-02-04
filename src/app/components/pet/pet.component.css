@@ -1,0 +1,81 @@
+
+/* Main layout: Form on right, Pet List on left */
+.container {
+    display: flex;
+    justify-content: flex-start; /* Keeps form and list close */
+    align-items: flex-start;
+    gap: 30px; /* Adjusts space between list and form */
+    max-width: 1200px; /* Ensures enough space for 3 pets per row */
+    margin: auto;
+  }
+  
+/* Pet list container - ensures pets align properly */
+.pet-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Reduce gap to fit more items */
+    width: 70%;
+  }
+  
+  /* Each pet card */
+  /* Each pet card */
+.pet-card {
+    width: calc(25% - 10px); /* Reduces width to fit 4 per row */
+    min-width: 150px; /* Prevents too-small cards */
+    max-width: 180px; /* Prevents oversized cards */
+    padding: 10px;
+    border-radius: 10px;
+    background-color: lightblue;
+    text-align: center;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+/* Pet images inside cards */
+.pet-card img {
+    width: 100%;
+    max-height: 100px; /* Reduce image size */
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  
+ /* Pet Form - Reduce border thickness and color */
+.pet-form {
+    width: 300px;
+    min-width: 280px;
+    padding: 15px;
+    border: 1px solid #ddd; /* Lighter and thinner border */
+    border-radius: 8px; /* Slightly rounded corners */
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* Form inputs */
+  .pet-form input {
+    padding: 8px;
+    border: 1px solid #bbb; /* Subtle border for inputs */
+    border-radius: 5px;
+    width: 95%;
+  }
+  
+  /* Buttons */
+  button {
+    background-color: turquoise;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  button:hover {
+    background-color: darkcyan;
+  }
+  
+  /* Space between buttons */
+  .pet-card button {
+    margin: 5px;
+  }
+  
