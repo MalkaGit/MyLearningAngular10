@@ -16,11 +16,11 @@
   <form class="pet-form" (ngSubmit)="addPet()" #petForm="ngForm">
     <h2>{{ editIndex === null ? 'Add Pet' : 'Edit Pet' }}</h2>
     
-    <input type="text" placeholder="Pet Name" [(ngModel)]="newPet.name" name="name" required />
-    <input type="text" placeholder="Breed" [(ngModel)]="newPet.breed" name="breed" required />
-    <input type="number" placeholder="Age" [(ngModel)]="newPet.age" name="age" required />
-    <input type="number" placeholder="Weight (kg)" [(ngModel)]="newPet.weight" name="weight" required />
-    <input type="text" placeholder="Photo URL" [(ngModel)]="newPet.photoUrl" name="photoUrl" required />
+    <input type="text" placeholder="Pet Name" [(ngModel)]="newOrUpdatedPet.name" name="name" required />
+    <input type="text" placeholder="Breed" [(ngModel)]="newOrUpdatedPet.breed" name="breed" required />
+    <input type="number" placeholder="Age" [(ngModel)]="newOrUpdatedPet.age" name="age" required />
+    <input type="number" placeholder="Weight (kg)" [(ngModel)]="newOrUpdatedPet.weight" name="weight" required />
+    <input type="text" placeholder="Photo URL" [(ngModel)]="newOrUpdatedPet.photoUrl" name="photoUrl" required />
     
     <button type="submit">{{ editIndex === null ? 'Add Pet' : 'Update Pet' }}</button>
     <button type="button" *ngIf="editIndex !== null" (click)="resetForm()">Cancel Edit</button>

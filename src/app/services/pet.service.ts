@@ -6,34 +6,34 @@ import { ParseTemplateOptions } from '@angular/compiler';
   providedIn: 'root'
 })
 export class PetService {
-
-  pets: Pet[] = [
+  private pets: Pet[] = [
     { id: 1, name: 'Buddy!', breed: 'Golden Retriever', age: 5, weight: 30, photoUrl: '' },
-    { id: 2, name: 'Luna!', breed: 'Labrador', age: 3, weight: 25, photoUrl: '' }
+    { id: 2, name: 'Luna!',  breed: 'Labrador', age: 3, weight: 25, photoUrl: '' }
   ];
-  
+  private nextNewIndex: number = 3;
 
   constructor() {}
 
   getAll(): Pet[] {
-    return [...this.pets];//like erialzie - other copy
+    return [...this.pets];//retrun a copy to prevent direct modification
   }
 
   getById(id: number): Pet |undefined {
-    let pet :Pet|undefined = this.pets.find(p => p.id === id);
+    const pet :Pet|undefined = this.pets.find(p => p.id === id);
     return pet;
   }
 
   add(pet: Pet): Pet {
-    pet.id = this.pets.length + 1;
-      this.pets.push(pet);
-      return pet;
+    const newPet: Pet = { ...pet}; //save a copy to prevent direct modification
+    newPet.id = this.nextNewIndex++;
+    this.pets.push(newPet);
+    return { ...newPet }; //retrun a copy to prevent direct modification
   }
 
   update(pet: Pet): Boolean {
     const index = this.pets.findIndex(p => p.id === pet.id);
     if (index !== -1) {
-      this.pets[index] = { ...this.pets[index], ...pet };
+      this.pets[index] = {...pet };//save a copy to prevent direct modification
       return true;
     }
     else {
@@ -41,17 +41,29 @@ export class PetService {
     }    
   }
 
-  delete(id: number): void {
+  delete(id: number): boolean {
     const index = this.pets.findIndex(p => p.id === id);
-    if (index !== -1) 
-    this.pets.splice(index, 1);
+    if (index !== -1) {
+      this.pets.splice(index, 1);
+      return true; 
+    }
+    else{
+     return false;
+    }
   }
 
 }
 
 
 //Note
+
+//ensure immutability by retruning copies when needed
+
 //1. @Injectable,import { Injectable }
 //   This marks the class as one that participates in the dependency injection system.
 //   The @Injectable() decorator accepts a metadata object for the service, the same way the @Component() decorator did for your component classes.
 //import { Injectable } from '@angular/core';
+
+
+//getAll returns a copy - as service do serialization
+//ithout it, as array updated here it is updated in the component
