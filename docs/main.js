@@ -324,8 +324,8 @@ __webpack_require__.r(__webpack_exports__);
 class PetService {
     constructor() {
         this.pets = [
-            { id: 1, name: 'Buddy!', breed: 'Golden Retriever', age: 5, weight: 30, photoUrl: '' },
-            { id: 2, name: 'Luna!', breed: 'Labrador', age: 3, weight: 25, photoUrl: '' }
+            { id: 1, name: 'Buddy!!', breed: 'Golden Retriever', age: 5, weight: 30, photoUrl: '' },
+            { id: 2, name: 'Luna!!', breed: 'Labrador', age: 3, weight: 25, photoUrl: '' }
         ];
         this.nextNewIndex = 3;
     }
