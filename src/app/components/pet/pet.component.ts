@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Pet } from '../../models/pet.model';
-import { PetService } from '../../services/pet.service';
+import { PetService } from '../../services/pet.service'
 
 
 @Component({
@@ -10,8 +10,8 @@ import { PetService } from '../../services/pet.service';
 })
 export class PetComponent {
   pets: Pet[] = [];
-  newPet: Pet = { id: 0, name: '', breed: '', age: 0, weight: 0, photoUrl: '' };
-  editIndex: number | null = null;
+  newOrUpdatedPet: Pet = { id: 0, name: '', breed: '', age: 0, weight: 0, photoUrl: '' };
+  editIndex: number | null = null;  
 
 
    constructor(private petService: PetService) {}
@@ -27,12 +27,14 @@ export class PetComponent {
   // Add or Update a pet
   addPet() {
     if (this.editIndex === null) {
-      let newPetAndId = this.petService.add(this.newPet);
-      this.pets.push({ ...newPetAndId }); //create copy
+      //add
+      const addedPet = this.petService.add(this.newOrUpdatedPet);
+      this.pets.push({ ...addedPet }); //create copy
     } else {
-      let updated :Boolean = this.petService.update(this.newPet);
-      if (updated)
-        this.pets[this.editIndex] = { ...this.newPet };
+      //update
+      const updatedPet :Boolean = this.petService.update(this.newOrUpdatedPet);
+      if (updatedPet)
+        this.pets[this.editIndex] = { ...this.newOrUpdatedPet };//copy !
       this.editIndex = null;
     }
     this.resetForm();
@@ -40,22 +42,24 @@ export class PetComponent {
 
   // Edit pet (loads data into the form)
   editPet(index: number) {
-    this.newPet = { ...this.pets[index] }; // Copy the pet to edit
+    this.newOrUpdatedPet = { ...this.pets[index] }; //copy
     this.editIndex = index;
   }
 
   // Delete pet
   deletePet(index: number) {
-    this.petService.delete(this.pets[index].id);
-    this.pets.splice(index, 1);
-    if (this.editIndex === index) {
-      this.resetForm();
+    const deletedPet :Boolean = this.petService.delete(this.pets[index].id);
+    if (deletedPet) {
+      this.pets.splice(index, 1);
+      if (this.editIndex === index) { //in case deleted pet is editted
+        this.resetForm();
+      }
     }
   }
 
   // Reset the form
   resetForm() {
-    this.newPet = { id: 0, name: '', breed: '', age: 0, weight: 0, photoUrl: '' };
+    this.newOrUpdatedPet = { id: 0, name: '', breed: '', age: 0, weight: 0, photoUrl: '' };
     this.editIndex = null;
   }
 }
