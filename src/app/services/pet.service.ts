@@ -7,8 +7,8 @@ import { ParseTemplateOptions } from '@angular/compiler';
 })
 export class PetService {
   private pets: Pet[] = [
-    { id: 1, name: 'Buddy!', breed: 'Golden Retriever', age: 5, weight: 30, photoUrl: '' },
-    { id: 2, name: 'Luna!',  breed: 'Labrador', age: 3, weight: 25, photoUrl: '' }
+    { id: 1, name: 'Buddy!!', breed: 'Golden Retriever', age: 5, weight: 30, photoUrl: '' },
+    { id: 2, name: 'Luna!!',  breed: 'Labrador', age: 3, weight: 25, photoUrl: '' }
   ];
   private nextNewIndex: number = 3;
 
