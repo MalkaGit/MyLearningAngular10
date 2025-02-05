@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Pet } from '../../models/pet.model';
+import { PetService } from '../../services/pet.service';
+
 
 @Component({
   selector: 'app-pet',
@@ -7,23 +9,30 @@ import { Pet } from '../../models/pet.model';
   styleUrls: ['./pet.component.css']
 })
 export class PetComponent {
-  pets: Pet[] = [
-    { id: 1, name: 'Buddy', breed: 'Golden Retriever', age: 5, weight: 30, photoUrl: 'https://via.placeholder.com/100' },
-    { id: 2, name: 'Luna', breed: 'Labrador', age: 3, weight: 25, photoUrl: 'https://via.placeholder.com/100' }
-  ];
-
+  pets: Pet[] = [];
   newPet: Pet = { id: 0, name: '', breed: '', age: 0, weight: 0, photoUrl: '' };
   editIndex: number | null = null;
+
+
+   constructor(private petService: PetService) {}
+
+  ngOnInit() {
+    this.getPets();
+  }
+
+  getPets(): void {
+    this.pets = this.petService.getAll();
+  }
 
   // Add or Update a pet
   addPet() {
     if (this.editIndex === null) {
-      // Adding new pet
-      this.newPet.id = this.pets.length + 1;
-      this.pets.push({ ...this.newPet });
+      let newPetAndId = this.petService.add(this.newPet);
+      this.pets.push({ ...newPetAndId }); //create copy
     } else {
-      // Updating existing pet
-      this.pets[this.editIndex] = { ...this.newPet };
+      let updated :Boolean = this.petService.update(this.newPet);
+      if (updated)
+        this.pets[this.editIndex] = { ...this.newPet };
       this.editIndex = null;
     }
     this.resetForm();
@@ -37,6 +46,7 @@ export class PetComponent {
 
   // Delete pet
   deletePet(index: number) {
+    this.petService.delete(this.pets[index].id);
     this.pets.splice(index, 1);
     if (this.editIndex === index) {
       this.resetForm();
@@ -49,3 +59,18 @@ export class PetComponent {
     this.editIndex = null;
   }
 }
+
+
+//Note:
+  //constructor define a private service property
+  //di: When Angular creates the component, the Dependency Injection system sets the service parameter to the singleton instance.
+  //constructor(private petService: PetService) {}
+
+
+  
+ //Note: calling getPet in the constructor, is not the best practice.
+ //      constructor  should be used for simple initialization such as wiring constructor parameters to properties. The constructor shouldn't do anything. It certainly shouldn't call a function that makes HTTP requests to a remote server as a real data service would.
+//       Instead, call getPets() inside the ngOnInit lifecycle hook and let Angular call ngOnInit() at an appropriate time after constructing a HeroesComponent instance.
+//ngOnInit() 
+
+
