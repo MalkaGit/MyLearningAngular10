@@ -198,7 +198,7 @@ class PetComponent {
     constructor(petService) {
         this.petService = petService;
         this.pets = [];
-        this.newPet = { id: 0, name: '', breed: '', age: 0, weight: 0, photoUrl: '' };
+        this.newOrUpdatedPet = { id: 0, name: '', breed: '', age: 0, weight: 0, photoUrl: '' };
         this.editIndex = null;
     }
     ngOnInit() {
@@ -210,33 +210,37 @@ class PetComponent {
     // Add or Update a pet
     addPet() {
         if (this.editIndex === null) {
-            let newPetAndId = this.petService.add(this.newPet);
-            this.pets.push(Object.assign({}, newPetAndId)); //create copy
+            //add
+            const addedPet = this.petService.add(this.newOrUpdatedPet);
+            this.pets.push(Object.assign({}, addedPet)); //create copy
         }
         else {
-            let updated = this.petService.update(this.newPet);
-            if (updated)
-                this.pets[this.editIndex] = Object.assign({}, this.newPet);
+            //update
+            const updatedPet = this.petService.update(this.newOrUpdatedPet);
+            if (updatedPet)
+                this.pets[this.editIndex] = Object.assign({}, this.newOrUpdatedPet); //copy !
             this.editIndex = null;
         }
         this.resetForm();
     }
     // Edit pet (loads data into the form)
     editPet(index) {
-        this.newPet = Object.assign({}, this.pets[index]); // Copy the pet to edit
+        this.newOrUpdatedPet = Object.assign({}, this.pets[index]); //copy
         this.editIndex = index;
     }
     // Delete pet
     deletePet(index) {
-        this.petService.delete(this.pets[index].id);
-        this.pets.splice(index, 1);
-        if (this.editIndex === index) {
-            this.resetForm();
+        const deletedPet = this.petService.delete(this.pets[index].id);
+        if (deletedPet) {
+            this.pets.splice(index, 1);
+            if (this.editIndex === index) { //in case deleted pet is editted
+                this.resetForm();
+            }
         }
     }
     // Reset the form
     resetForm() {
-        this.newPet = { id: 0, name: '', breed: '', age: 0, weight: 0, photoUrl: '' };
+        this.newOrUpdatedPet = { id: 0, name: '', breed: '', age: 0, weight: 0, photoUrl: '' };
         this.editIndex = null;
     }
 }
@@ -252,19 +256,19 @@ PetComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineCompo
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](6);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](7, "input", 5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngModelChange", function PetComponent_Template_input_ngModelChange_7_listener($event) { return ctx.newPet.name = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngModelChange", function PetComponent_Template_input_ngModelChange_7_listener($event) { return ctx.newOrUpdatedPet.name = $event; });
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](8, "input", 6);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngModelChange", function PetComponent_Template_input_ngModelChange_8_listener($event) { return ctx.newPet.breed = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngModelChange", function PetComponent_Template_input_ngModelChange_8_listener($event) { return ctx.newOrUpdatedPet.breed = $event; });
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](9, "input", 7);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngModelChange", function PetComponent_Template_input_ngModelChange_9_listener($event) { return ctx.newPet.age = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngModelChange", function PetComponent_Template_input_ngModelChange_9_listener($event) { return ctx.newOrUpdatedPet.age = $event; });
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](10, "input", 8);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngModelChange", function PetComponent_Template_input_ngModelChange_10_listener($event) { return ctx.newPet.weight = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngModelChange", function PetComponent_Template_input_ngModelChange_10_listener($event) { return ctx.newOrUpdatedPet.weight = $event; });
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](11, "input", 9);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngModelChange", function PetComponent_Template_input_ngModelChange_11_listener($event) { return ctx.newPet.photoUrl = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngModelChange", function PetComponent_Template_input_ngModelChange_11_listener($event) { return ctx.newOrUpdatedPet.photoUrl = $event; });
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](12, "button", 10);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](13);
@@ -278,15 +282,15 @@ PetComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineCompo
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](ctx.editIndex === null ? "Add Pet" : "Edit Pet");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngModel", ctx.newPet.name);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngModel", ctx.newOrUpdatedPet.name);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngModel", ctx.newPet.breed);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngModel", ctx.newOrUpdatedPet.breed);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngModel", ctx.newPet.age);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngModel", ctx.newOrUpdatedPet.age);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngModel", ctx.newPet.weight);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngModel", ctx.newOrUpdatedPet.weight);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngModel", ctx.newPet.photoUrl);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngModel", ctx.newOrUpdatedPet.photoUrl);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](ctx.editIndex === null ? "Add Pet" : "Update Pet");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
@@ -323,23 +327,25 @@ class PetService {
             { id: 1, name: 'Buddy!', breed: 'Golden Retriever', age: 5, weight: 30, photoUrl: '' },
             { id: 2, name: 'Luna!', breed: 'Labrador', age: 3, weight: 25, photoUrl: '' }
         ];
+        this.nextNewIndex = 3;
     }
     getAll() {
-        return [...this.pets]; //like erialzie - other copy
+        return [...this.pets]; //retrun a copy to prevent direct modification
     }
     getById(id) {
-        let pet = this.pets.find(p => p.id === id);
+        const pet = this.pets.find(p => p.id === id);
         return pet;
     }
     add(pet) {
-        pet.id = this.pets.length + 1;
-        this.pets.push(pet);
-        return pet;
+        const newPet = Object.assign({}, pet); //save a copy to prevent direct modification
+        newPet.id = this.nextNewIndex++;
+        this.pets.push(newPet);
+        return Object.assign({}, newPet); //retrun a copy to prevent direct modification
     }
     update(pet) {
         const index = this.pets.findIndex(p => p.id === pet.id);
         if (index !== -1) {
-            this.pets[index] = Object.assign(Object.assign({}, this.pets[index]), pet);
+            this.pets[index] = Object.assign({}, pet); //save a copy to prevent direct modification
             return true;
         }
         else {
@@ -348,8 +354,13 @@ class PetService {
     }
     delete(id) {
         const index = this.pets.findIndex(p => p.id === id);
-        if (index !== -1)
+        if (index !== -1) {
             this.pets.splice(index, 1);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
 PetService.ɵfac = function PetService_Factory(t) { return new (t || PetService)(); };
