@@ -7,8 +7,8 @@ import { ParseTemplateOptions } from '@angular/compiler';
 })
 export class PetService {
   private pets: Pet[] = [
-    { id: 1, name: 'Buddy!!', breed: 'Golden Retriever', age: 5, weight: 30, photoUrl: '' },
-    { id: 2, name: 'Luna!!',  breed: 'Labrador', age: 3, weight: 25, photoUrl: '' }
+    { id: 1, name: 'Buddy!!!', breed: 'Golden Retriever', age: 5, weight: 30, photoUrl: '' },
+    { id: 2, name: 'Luna!!!',  breed: 'Labrador', age: 3, weight: 25, photoUrl: '' }
   ];
   private nextNewIndex: number = 3;
 
@@ -20,7 +20,8 @@ export class PetService {
 
   getById(id: number): Pet |undefined {
     const pet :Pet|undefined = this.pets.find(p => p.id === id);
-    return pet;
+    const result : Pet |undefined  = (pet === undefined) ?undefined :  {...pet };//return a copy to prevent direct modification
+    return result;
   }
 
   add(pet: Pet): Pet {
@@ -57,7 +58,11 @@ export class PetService {
 
 //Note
 
-//ensure immutability by retruning copies when needed
+//key features
+
+
+//0. ensure immutability by retruning copies when needed
+//    ithout it, as array updated here it is updated in the component
 
 //1. @Injectable,import { Injectable }
 //   This marks the class as one that participates in the dependency injection system.
@@ -65,5 +70,10 @@ export class PetService {
 //import { Injectable } from '@angular/core';
 
 
-//getAll returns a copy - as service do serialization
-//ithout it, as array updated here it is updated in the component
+//. add: Assigns a unique, auto-incrementing id to each item.
+
+//3.getItemById(id: number): Retrieves a specific item by its id.
+
+//4.updateItem(id: number, newName: string): Updates an item’s name by id.
+
+//5. deleteItem(id: number): Removes an item by id.
