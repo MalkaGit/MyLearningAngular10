@@ -15,7 +15,6 @@ export class PetService {
   constructor() {}
 
   async getAll(): Promise<Pet[]> {
-    throw new Error("get all failed");
     return [...this.pets]; // automatically resolves the promise. retrun a copy to prevent direct modification
   }
   //sync verion
