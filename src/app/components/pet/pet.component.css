@@ -9,6 +9,7 @@
     margin: auto;
   }
   
+
 /* Pet list container - ensures pets align properly */
 .pet-list {
     display: flex;

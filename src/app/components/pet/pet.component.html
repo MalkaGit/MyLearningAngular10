@@ -1,4 +1,10 @@
 <div class="container">
+
+  <div *ngIf="errorMessage">
+    <strong>Error:</strong> {{ errorMessage }}
+  </div>
+  
+  
   <!-- Pet List -->
   <div class="pet-list">
     <div *ngFor="let pet of pets; let i = index" class="pet-card">
@@ -11,6 +17,8 @@
       <button (click)="deletePet(i)">Delete</button>
     </div>
   </div>
+
+
 
   <!-- Pet Form -->
   <form class="pet-form" (ngSubmit)="addPet()" #petForm="ngForm">
