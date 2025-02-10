@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Pet } from '../../models/pet.model';
 import { PetService } from '../../services/pet.service'
-
+import { Observable } from 'rxjs'; // Import Observable 
 
 @Component({
   selector: 'app-pet',
@@ -20,44 +20,79 @@ export class PetComponent {
     this.getPets();
   }
 
-  async getPets(): Promise<void> {
-    try {
-      this.pets = await this.petService.getAll();
-    } 
-    catch (error :any) {
-      this.errorMessage = error.message || 'Something went wrong!';
-    }
+
+  getPets(): void {
+      this.petService.getAll().subscribe({
+        next: (data: Pet[]) => this.pets = data,  // On success, update the pets list
+        error: (error) => this.errorMessage = error.message || 'Something went wrong!'  // Handle errors
+      });
   }
+
+  //async
+  // async getPets(): Promise<void> {
+  //   try {
+  //     this.pets = await this.petService.getAll();
+  //   } 
+  //   catch (error :any) {
+  //     this.errorMessage = error.message || 'Something went wrong!';
+  //   }
+  // }
+
   // getPets(): void {
   //   this.pets = this.petService.getAll();
   // }
 
 
-  // Add or Update a pet
-  async addPet(): Promise<void> {
-    if (this.editIndex === null) 
-    { //add
-      try {
-          const addedPet = await this.petService.add(this.newOrUpdatedPet);
-          this.pets.push({ ...addedPet }); //create copy
-      } 
-      catch (error: any){
-          this.errorMessage = error.message || 'Failed to add item!';
-      }
-    } 
-    else 
-    { //update
-      try {
-          await this.petService.update(this.newOrUpdatedPet);
-          this.pets[this.editIndex] = { ...this.newOrUpdatedPet };//copy !
+
+  //Add or Update a pet
+  addPet(): void {
+    if (this.editIndex === null) {
+      // Add
+      this.petService.add(this.newOrUpdatedPet).subscribe({
+        next: (addedPet: Pet) => this.pets.push({ ...addedPet }),  // create copy
+        error: (error) => this.errorMessage = error.message || 'Failed to add item!'  // Handle errors
+      });
+    } else {
+      // Update
+      this.petService.update(this.newOrUpdatedPet).subscribe({
+        next: () => {
+          if (this.editIndex !== null) 
+            this.pets[this.editIndex] = { ...this.newOrUpdatedPet }; // copy
           this.editIndex = null;
-      } 
-      catch (error: any){
-        this.errorMessage = error.message || 'Failed to update item!';
-      }
+        },
+        error: (error) => this.errorMessage = error.message || 'Failed to update item!'  // Handle errors
+      });
     }
     this.resetForm();
   }
+
+
+  // async Add or Update a pet
+  // async addPet(): Promise<void> {
+  //   if (this.editIndex === null) 
+  //   { //add
+  //     try {
+  //         const addedPet = await this.petService.add(this.newOrUpdatedPet);
+  //         this.pets.push({ ...addedPet }); //create copy
+  //     } 
+  //     catch (error: any){
+  //         this.errorMessage = error.message || 'Failed to add item!';
+  //     }
+  //   } 
+  //   else 
+  //   { //update
+  //     try {
+  //         await this.petService.update(this.newOrUpdatedPet);
+  //         this.pets[this.editIndex] = { ...this.newOrUpdatedPet };//copy !
+  //         this.editIndex = null;
+  //     } 
+  //     catch (error: any){
+  //       this.errorMessage = error.message || 'Failed to update item!';
+  //     }
+  //   }
+  //   this.resetForm();
+  // }
+
   // addPet() {
   //   if (this.editIndex === null) {
   //     //add
@@ -81,20 +116,37 @@ export class PetComponent {
     this.editIndex = index;
   }
 
-  // Delete pet
-  async deletePet(index: number = 0): Promise<void> {
-    try 
-    {  
-      await this.petService.delete(this.pets[index].id);
-      this.pets.splice(index, 1);
-      if (this.editIndex === index) { //in case deleted pet is editted
-               this.resetForm();
-      }
-    } catch (error :any ) 
-    {
-      this.errorMessage = error.message || 'Failed to delete item!';
-    }
+
+  
+
+
+  deletePet(index: number = 0): void {
+    this.petService.delete(this.pets[index].id).subscribe({
+      next: () => {
+        this.pets.splice(index, 1);  // Remove pet from list
+        if (this.editIndex === index) { // Reset form if edited pet is deleted
+          this.resetForm();
+        }
+      },
+      error: (error) => this.errorMessage = error.message || 'Failed to delete item!'  // Handle errors
+    });
   }
+
+  //async
+  // async deletePet(index: number = 0): Promise<void> {
+  //   try 
+  //   {  
+  //     await this.petService.delete(this.pets[index].id);
+  //     this.pets.splice(index, 1);
+  //     if (this.editIndex === index) { //in case deleted pet is editted
+  //              this.resetForm();
+  //     }
+  //   } catch (error :any ) 
+  //   {
+  //     this.errorMessage = error.message || 'Failed to delete item!';
+  //   }
+  // }
+
   // deletePet(index: number) {
   //   const deletedPet :Boolean = this.petService.delete(this.pets[index].id);
   //   if (deletedPet) {
@@ -112,17 +164,31 @@ export class PetComponent {
   }
 
 
-  //not used
-  async getItemById(id: number): Promise<void> {
-    try {
-      const pet = await this.petService.getById(id);
-      console.log(pet); // Do something with the item
-    } catch (error :any) {
-      this.errorMessage = error.message || 'Item not found!';
-    }
+
+
+  getItemById(id: number): void {
+    this.petService.getById(id).subscribe({
+      next: (pet: Pet) => console.log(pet), // Do something with the item
+      error: (error) => this.errorMessage = error.message || 'Item not found!'  // Handle errors
+    });
   }
+  
+  //not used
+  // async getItemById(id: number): Promise<void> {
+  //   try {
+  //     const pet = await this.petService.getById(id);
+  //     console.log(pet); // Do something with the item
+  //   } catch (error :any) {
+  //     this.errorMessage = error.message || 'Item not found!';
+  //   }
+  // }
 }
 
+//changes for observable instead aync await
+// getPets(): Replaced async/await with the subscribe() method to handle the observable from petService.getAll().
+// addPet() and updatePet(): Replaced async/await with subscribe() to handle observable responses for add and update operations.
+// deletePet(): Used subscribe() to handle the observable from the delete operation.
+// getItemById(): Similar change for getById() where subscribe() is used.
 
 //Note:
   //constructor define a private service property
