@@ -19,7 +19,11 @@ export class PetEffects {
       mergeMap(() =>
         this.petService.getAll().pipe(                                                      //call service that return Observable
           map((pets: Pet[]) => PetActions.getAllPetsSuccess({ pets })),                    //on service success, effect Dispatch success action
-          catchError((error) => of(PetActions.getAllPetsFailure({ error: error.message })))//on service error, effect Dispatch failure action 
+          catchError((error) =>{
+            const errorMessage = (typeof error === "function") ? error() : error.message; //RxJS may return function
+            return of(PetActions.getAllPetsFailure({ error: errorMessage }));
+        }
+        )//on service error, effect Dispatch failure action 
         )
       )
     )
@@ -32,7 +36,11 @@ export class PetEffects {
       mergeMap((action) =>
         this.petService.add(action.pet).pipe(
           map((pet: Pet) => PetActions.addPetSuccess({ pet })),                        //on service success, effect Dispatch success action
-          catchError((error) => of(PetActions.addPetFailure({ error: error.message })))//on service error, effect Dispatch failure action 
+          catchError((error) =>{
+            const errorMessage = (typeof error === "function") ? error() : error.message; //RxJS may return function
+            return of(PetActions.addPetFailure({ error: errorMessage }));
+        }
+        )//on service error, effect Dispatch failure action 
         )
       )
     )
@@ -46,7 +54,11 @@ export class PetEffects {
       mergeMap((action) =>
         this.petService.update(action.pet).pipe(
           map((pet: Pet)=> PetActions.updatePetSuccess({ pet })),                           //!!!!!!! on service success, effect Dispatch success action
-          catchError((error) => of(PetActions.updatePetFailure({ error: error.message }))) //on service error, effect Dispatch failure action 
+          catchError((error) =>{
+            const errorMessage = (typeof error === "function") ? error() : error.message; //RxJS may return function
+            return of(PetActions.updatePetFailure({ error: errorMessage }));
+        }
+        ) //on service error, effect Dispatch failure action 
         )
       )
     )
@@ -59,7 +71,11 @@ export class PetEffects {
       mergeMap((action) =>
         this.petService.delete(action.id).pipe(
           map((id: number) => PetActions.deletePetSuccess( {id})),                            //on service success, effect Dispatch success action     
-          catchError((error) => of(PetActions.deletePetFailure({ error: error.message })))    //on service error, effect Dispatch failure action 
+          catchError((error) =>{
+            const errorMessage = (typeof error === "function") ? error() : error.message; //RxJS may return function
+            return of(PetActions.deletePetFailure({ error: errorMessage }));
+        }
+        ) //on service error, effect Dispatch failure action 
         )
       )
     )
