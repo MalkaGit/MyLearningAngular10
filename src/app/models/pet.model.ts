@@ -1,3 +1,4 @@
+//model, service, action, effect,reducer ,  selectors, componet class, component template, class AppModule
 export interface Pet {
   id: number;
   name: string;

@@ -1,0 +1,60 @@
+*flow 
+        component define observable data members and subscribe to get notification from  the store 
+            public pets$: Observable<Pet[]>;          
+            public error$: Observable<string | null>;
+            this.pets$ = this.store.pipe(select(PetSelectors.selectPets));       
+            this.error$ = this.store.pipe(select(PetSelectors.selectError));    
+            
+                    this.pets$ is an observable that listens for changes in the Redux store.
+                    When the store changes, pets$ automatically emits the new pet list to the component.
+
+        Template define Auto-Updates with async Pipe
+                <div *ngFor="let pet of pets$ | async">
+                        The async pipe automatically subscribes to pets$.
+                        When pets$ emits a new value, the async pipe detects the change and updates the template.
+                        No manual subscription needed!
+                        No memory leaks (because async pipe unsubscribes when the component is destroyed).
+
+        component dispatch actions against service. 
+            see pet.component.ts
+            this.store.dispatch(PetActions.getAllPets());
+            this.store.dispatch(PetActions.deletePet({ id }));
+            this.store.dispatch(PetActions.addPet({ pet: { ...this.newOrUpdatedPet, id: 0 } }));
+            this.store.dispatch(PetActions.updatePet({ pet: this.newOrUpdatedPet }));
+        
+            Effect handle the  actions fired by component by calling service.
+            see pet.effects.ts
+                getAllPets$ = createEffect(() =>this.actions$.pipe(ofType(getAllPets), 
+                addPet$ = createEffect(() =>    this.actions$.pipe(ofType(addPet),       
+                 updatePet$ = createEffect(() =>this.actions$.pipe(ofType(updatePet),     
+
+            Effect call the service. hen complete, the effect dipath success\error actions.
+                 see pet.effects.ts
+                this.petService.getAll().pipe(
+                    map((pets: Pet[]) =>        PetActions.getAllPetsSuccess({ pets })),                    
+                    catchError((error) => of(   PetActions.getAllPetsFailure({ error: error.message }))) )
+                this.petService.add(action.pet).pipe(
+                    map((pet: Pet) =>           PetActions.addPetSuccess({ pet })),
+                    catchError((error) => of(   PetActions.addPetFailure({ error: error.message })))//on service error, effect Dispatch failure action 
+                this.petService.update(action.pet).pipe(
+                    map((pet: Pet)=>            PetActions.updatePetSuccess({ pet })),
+                    catchError((error) => of(   PetActions.updatePetFailure({ error: error.message })))  
+                 this.petService.delete(action.id).pipe(
+                    map((id: number) =>         PetActions.deletePetSuccess( {id})),                                       //on service success, effect Dispatch success action     
+                    catchError((error) => of(   PetActions.deletePetFailure({ error: error.message })))//on service error, effect Dispatch failure action 
+        
+            reducer handle the success\error actions (fired by effect) by updating store state.  
+			    see pet.reducer.ts		 
+                    on(PetActions.getAllPetsSuccess, (state, { pets })
+                    on(PetActions.addPetSuccess, (state, { pet })
+                    on(PetActions.updatePetSuccess, (state, { pet })
+                     on(PetActions.deletePetSuccess, (state, { id })
+                     ... 
+
+            When reducer update (pets in) the  store (ith service result)
+            the pets$ emits a new value because it is subscribed to the store via the selector.
+            When pets$ emits a new value, 
+            the template async pipe  detects the change and updates the template.        
+                No manual subscription needed!
+                No memory leaks (because async pipe unsubscribes from store when the component is destroyed).
+

@@ -1,36 +1,33 @@
 <div class="container">
-
-  <div *ngIf="errorMessage">
-    <strong>Error:</strong> {{ errorMessage }}
+  <div *ngIf="error$ | async as error" class="error">
+    <p>{{ error }}</p>
   </div>
-  
-  
+
   <!-- Pet List -->
   <div class="pet-list">
-    <div *ngFor="let pet of pets; let i = index" class="pet-card">
-      <img [src]="pet.photoUrl" alt="{{ pet.name }}" />
-      <h3>{{ pet.name }}</h3>
-      <p>Breed: {{ pet.breed }}</p>
-      <p>Age: {{ pet.age }} years</p>
-      <p>Weight: {{ pet.weight }} kg</p>
-      <button (click)="editPet(i)">Edit</button>
-      <button (click)="deletePet(i)">Delete</button>
-    </div>
+      <div *ngFor="let pet of pets$ | async" class="pet-card">
+          <img [src]="pet.photoUrl" alt="{{ pet.name }}" />
+          <h3>{{ pet.name }}</h3>
+          <p>Breed: {{ pet.breed }}</p>
+          <p>Age: {{ pet.age }} years</p>
+          <p>Weight: {{ pet.weight }} kg</p>
+          <button (click)="editPet(pet)">Edit</button>
+          <button (click)="deletePet(pet.id)">Delete</button>
+      </div>
   </div>
-
-
 
   <!-- Pet Form -->
   <form class="pet-form" (ngSubmit)="addPet()" #petForm="ngForm">
-    <h2>{{ editIndex === null ? 'Add Pet' : 'Edit Pet' }}</h2>
-    
     <input type="text" placeholder="Pet Name" [(ngModel)]="newOrUpdatedPet.name" name="name" required />
     <input type="text" placeholder="Breed" [(ngModel)]="newOrUpdatedPet.breed" name="breed" required />
     <input type="number" placeholder="Age" [(ngModel)]="newOrUpdatedPet.age" name="age" required />
     <input type="number" placeholder="Weight (kg)" [(ngModel)]="newOrUpdatedPet.weight" name="weight" required />
     <input type="text" placeholder="Photo URL" [(ngModel)]="newOrUpdatedPet.photoUrl" name="photoUrl" required />
-    
-    <button type="submit">{{ editIndex === null ? 'Add Pet' : 'Update Pet' }}</button>
-    <button type="button" *ngIf="editIndex !== null" (click)="resetForm()">Cancel Edit</button>
+        
+    <button (click)="isUpdating ? updatePet() : addPet()">
+      {{ isUpdating ? 'Update Pet' : 'Add Pet' }}
+    </button>
+  
+    <button *ngIf="isUpdating" (click)="resetForm()">Cancel</button>
   </form>
 </div>
